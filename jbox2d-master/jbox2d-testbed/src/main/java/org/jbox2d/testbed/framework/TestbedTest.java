@@ -23,9 +23,9 @@
  ******************************************************************************/
 package org.jbox2d.testbed.framework;
 
-import java.util.ArrayList;
+import java.time.Instant;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
@@ -49,7 +49,6 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
-import org.jbox2d.dynamics.Profile;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 import org.jbox2d.dynamics.joints.Joint;
@@ -64,6 +63,8 @@ import org.jbox2d.serialization.UnsupportedListener;
 import org.jbox2d.serialization.UnsupportedObjectException;
 import org.jbox2d.serialization.pb.PbDeserializer;
 import org.jbox2d.serialization.pb.PbSerializer;
+
+import com.google.common.base.Stopwatch;
 
 /**
  * @author Daniel Murphy
@@ -115,7 +116,12 @@ public abstract class TestbedTest
   private JbDeserializer deserializer;
 
   private final Transform identity = new Transform();
-
+  
+  
+  private long start;
+  private long current;
+  
+  
   public TestbedTest() {
     identity.setIdentity();
     for (int i = 0; i < MAX_CONTACT_POINTS; i++) {
@@ -190,7 +196,9 @@ public abstract class TestbedTest
   }
 
   public void init(TestbedModel model) {
-    this.model = model;
+    
+	start = System.currentTimeMillis();  
+	this.model = model;
 
     Vec2 gravity = new Vec2(0, -10f);
     m_world = model.getWorldCreator().createWorld(gravity);
@@ -365,8 +373,6 @@ public abstract class TestbedTest
   private final Vec2 p1 = new Vec2();
   private final Vec2 p2 = new Vec2();
   private final Vec2 tangent = new Vec2();
-  private final List<String> statsList = new ArrayList<String>();
-
   private final Vec2 acceleration = new Vec2();
   private final CircleShape pshape = new CircleShape();
   private final ParticleVelocityQueryCallback pcallback = new ParticleVelocityQueryCallback();
@@ -426,14 +432,23 @@ public abstract class TestbedTest
     if (timeStep > 0f) {
       ++stepCount;
     }
-
+    
+    current = System.currentTimeMillis()-start;
+    
     debugDraw.drawString(5, m_textLine, "Info", color4);
     m_textLine += TEXT_LINE_SPACE;
-    debugDraw.drawString(5, m_textLine, "Current Framerate/Cost: " + (int) model.getCalculatedFps(),
-        Color3f.WHITE);
-    m_textLine += TEXT_LINE_SPACE;
     
-/*    debugDraw.drawString(5, m_textLine, "Best Framerate/Cost: " + (int) model.getBestFps(),
+    if (!settings.pause) {
+    	debugDraw.drawString(5, m_textLine, "Current Time: " + (float) (current)/1000,
+    			Color3f.WHITE);
+    	m_textLine += TEXT_LINE_SPACE;
+    }/* else {
+    	debugDraw.drawString(5, m_textLine, "Current Time: " + ,
+    			Color3f.WHITE);
+    	m_textLine += TEXT_LINE_SPACE;
+    }*/
+    
+/*    debugDraw.drawString(5, m_textLine, "Best Time: " + (int) model.getBestFps(),
             Color3f.WHITE);
         m_textLine += TEXT_LINE_SPACE;
     debugDraw.drawString(5, m_textLine, "Variance: " + ((int) model.getBestFps() - (int) model.getCalculatedFps()),

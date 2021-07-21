@@ -11,7 +11,6 @@ import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.joints.Joint;
 import org.jbox2d.dynamics.joints.WheelJoint;
 import org.jbox2d.dynamics.joints.WheelJointDef;
-import org.jbox2d.testbed.framework.TestbedModel;
 import org.jbox2d.testbed.framework.TestbedSettings;
 import org.jbox2d.testbed.framework.TestbedTest;
 
@@ -23,7 +22,6 @@ import org.jbox2d.testbed.framework.TestbedTest;
 
 public class CarTest extends TestbedTest {
 
-	private int frame;
 	//Initialization
 	private static final long CAR_TAG = 100l;
 	private static final long WHEEL1_TAG = 101l;
@@ -34,18 +32,41 @@ public class CarTest extends TestbedTest {
 	private Body m_car;
 	private Body m_wheel1;
 	private Body m_wheel2;
-	
 	/**
 	 * 	m_hz = Suspension damping ratio: The tightness of suspension springs.
 	 * 			Reduces bounce and adds stiffness.
 	 * 			Underdamped < 1 > Overdamped.
 	 */
 	private float m_hz;
-	
 	private float m_zeta; //Damping Ratio: Resistive force reactionary friction.
 	private float m_speed; //Rotational torque of the wheels.
 	private WheelJoint m_spring1;
 	private WheelJoint m_spring2;
+	
+	@Override
+	  public Long getTag(Body body) {
+	    if (body == m_car) {
+	      return CAR_TAG;
+	    }
+	    if (body == m_wheel1) {
+	      return WHEEL1_TAG;
+	    }
+	    if (body == m_wheel2) {
+	      return WHEEL2_TAG;
+	    }
+	    return super.getTag(body);
+	  }
+
+	  @Override
+	  public Long getTag(Joint joint) {
+	    if (joint == m_spring1) {
+	      return SPRING1_TAG;
+	    }
+	    if (joint == m_spring2) {
+	      return SPRING2_TAG;
+	    }
+	    return super.getTag(joint);
+	  }
 	
 	@Override
 	public void processBody(Body body, Long tag) {
