@@ -56,8 +56,6 @@ public class TestbedSettings {
   public static final String DrawContactImpulses = "Contact Impulses";
   public static final String DrawFrictionImpulses = "Friction Impulses";
   public static final String DrawCOMs = "Center of Mass";
-  public static final String DrawStats = "Stats";
-  public static final String DrawHelp = "Help";
   public static final String DrawTree = "Dynamic Tree";
   public static final String DrawWireframe = "Wireframe Mode";
 
@@ -89,8 +87,6 @@ public class TestbedSettings {
     addSetting(new TestbedSetting(DrawContactImpulses, SettingType.DRAWING, false));
     addSetting(new TestbedSetting(DrawFrictionImpulses, SettingType.DRAWING, false));
     addSetting(new TestbedSetting(DrawCOMs, SettingType.DRAWING, false));
-    addSetting(new TestbedSetting(DrawStats, SettingType.DRAWING, true));
-    addSetting(new TestbedSetting(DrawHelp, SettingType.DRAWING, false));
     addSetting(new TestbedSetting(DrawTree, SettingType.DRAWING, false));
     addSetting(new TestbedSetting(DrawWireframe, SettingType.DRAWING, true));
   }

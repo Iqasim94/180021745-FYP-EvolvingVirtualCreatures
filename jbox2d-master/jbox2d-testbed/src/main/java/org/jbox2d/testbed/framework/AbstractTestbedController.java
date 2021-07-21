@@ -261,9 +261,6 @@ public abstract class AbstractTestbedController {
         case MouseDrag:
           currTest.mouseDrag(i.p, i.button);
           break;
-        case LaunchBomb:
-          currTest.lanchBomb();
-          break;
         case Pause:
           model.getSettings().pause = !model.getSettings().pause;
           break;

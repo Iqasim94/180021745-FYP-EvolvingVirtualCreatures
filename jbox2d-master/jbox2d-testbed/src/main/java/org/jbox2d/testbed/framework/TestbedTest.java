@@ -49,7 +49,6 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Fixture;
-import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.Profile;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
@@ -80,10 +79,8 @@ public abstract class TestbedTest
   public static final int TEXT_LINE_SPACE = 13;
   public static final int TEXT_SECTION_SPACE = 3;
   public static final int MOUSE_JOINT_BUTTON = 1;
-  public static final int BOMB_SPAWN_BUTTON = 10;
 
   protected static final long GROUND_BODY_TAG = 1897450239847L;
-  protected static final long BOMB_TAG = 98989788987L;
   protected static final long MOUSE_JOINT_TAG = 4567893364789L;
 
   public final ContactPoint[] points = new ContactPoint[MAX_CONTACT_POINTS];
@@ -94,11 +91,6 @@ public abstract class TestbedTest
   protected World m_world;
   protected Body groundBody;
   private MouseJoint mouseJoint;
-
-  private Body bomb;
-  private final Vec2 bombMousePoint = new Vec2();
-  private final Vec2 bombSpawnPoint = new Vec2();
-  private boolean bombSpawning = false;
 
   protected boolean mouseTracing;
   private Vec2 mouseTracerPosition = new Vec2();
@@ -133,11 +125,7 @@ public abstract class TestbedTest
       @Override
       public Long getTag(Body argBody) {
         if (isSaveLoadEnabled()) {
-          if (argBody == groundBody) {
             return GROUND_BODY_TAG;
-          } else if (argBody == bomb) {
-            return BOMB_TAG;
-          }
         }
         return super.getTag(argBody);
       }
@@ -156,13 +144,8 @@ public abstract class TestbedTest
       @Override
       public void processBody(Body argBody, Long argTag) {
         if (isSaveLoadEnabled()) {
-          if (argTag == GROUND_BODY_TAG) {
             groundBody = argBody;
             return;
-          } else if (argTag == BOMB_TAG) {
-            bomb = argBody;
-            return;
-          }
         }
         super.processBody(argBody, argTag);
       }
@@ -213,7 +196,6 @@ public abstract class TestbedTest
     m_world = model.getWorldCreator().createWorld(gravity);
     m_world.setParticleGravityScale(0.4f);
     m_world.setParticleDensity(1.2f);
-    bomb = null;
     mouseJoint = null;
 
     mouseTracing = false;
@@ -230,7 +212,6 @@ public abstract class TestbedTest
     m_world = world;
     pointCount = 0;
     stepCount = 0;
-    bombSpawning = false;
     model.getDebugDraw().setViewportTransform(camera.getTransform());
 
     world.setDestructionListener(destructionListener);
@@ -304,13 +285,6 @@ public abstract class TestbedTest
 
   public TestbedCamera getCamera() {
     return camera;
-  }
-
-  /**
-   * Gets the 'bomb' body if it's present
-   */
-  public Body getBomb() {
-    return bomb;
   }
 
   /**
@@ -453,13 +427,25 @@ public abstract class TestbedTest
       ++stepCount;
     }
 
-    debugDraw.drawString(5, m_textLine, "Engine Info", color4);
+    debugDraw.drawString(5, m_textLine, "Info", color4);
     m_textLine += TEXT_LINE_SPACE;
-    debugDraw.drawString(5, m_textLine, "Framerate: " + (int) model.getCalculatedFps(),
+    debugDraw.drawString(5, m_textLine, "Current Framerate/Cost: " + (int) model.getCalculatedFps(),
         Color3f.WHITE);
     m_textLine += TEXT_LINE_SPACE;
-
-    if (settings.getSetting(TestbedSettings.DrawStats).enabled) {
+    
+/*    debugDraw.drawString(5, m_textLine, "Best Framerate/Cost: " + (int) model.getBestFps(),
+            Color3f.WHITE);
+        m_textLine += TEXT_LINE_SPACE;
+    debugDraw.drawString(5, m_textLine, "Variance: " + ((int) model.getBestFps() - (int) model.getCalculatedFps()),
+    
+    if ((int) model.getCalculatedFps() > (int) model.getBestFps()) {
+    Color3F.RED
+    } else {
+    Color3F.GREEN
+    });
+    m_textLine += TEXT_LINE_SPACE;
+*/
+/*    if (settings.getSetting(TestbedSettings.DrawStats).enabled) {
       int particleCount = m_world.getParticleCount();
       int groupCount = m_world.getParticleGroupCount();
       debugDraw.drawString(
@@ -485,21 +471,13 @@ public abstract class TestbedTest
       }
       m_textLine += TEXT_SECTION_SPACE;
     }
-
-    if (settings.getSetting(TestbedSettings.DrawHelp).enabled) {
-      debugDraw.drawString(5, m_textLine, "Help", color4);
-      m_textLine += TEXT_LINE_SPACE;
-      List<String> help = model.getImplSpecificHelp();
-      for (String string : help) {
-        debugDraw.drawString(5, m_textLine, string, Color3f.WHITE);
-        m_textLine += TEXT_LINE_SPACE;
-      }
-      m_textLine += TEXT_SECTION_SPACE;
-    }
-
+*/
     if (!textList.isEmpty()) {
-      debugDraw.drawString(5, m_textLine, "Test Info", color4);
-      m_textLine += TEXT_LINE_SPACE;
+      
+      debugDraw.drawString(5, m_textLine, "World mouse position: " + mouseWorld.toString(),
+              Color3f.WHITE);
+          m_textLine += TEXT_LINE_SPACE;  
+          
       for (String s : textList) {
         debugDraw.drawString(5, m_textLine, s, Color3f.WHITE);
         m_textLine += TEXT_LINE_SPACE;
@@ -529,10 +507,6 @@ public abstract class TestbedTest
       Vec2 p2 = mouseJoint.getTarget();
 
       debugDraw.drawSegment(p1, p2, mouseColor);
-    }
-
-    if (bombSpawning) {
-      debugDraw.drawSegment(bombSpawnPoint, bombMousePoint, Color3f.WHITE);
     }
 
     if (settings.getSetting(TestbedSettings.DrawContactPoints).enabled) {
@@ -580,7 +554,6 @@ public abstract class TestbedTest
     if (button == MOUSE_JOINT_BUTTON) {
       destroyMouseJoint();
     }
-    completeBombSpawn(p);
   }
 
   public void keyPressed(char keyChar, int keyCode) {}
@@ -592,10 +565,6 @@ public abstract class TestbedTest
     mouseTracing = true;
     mouseTracerVelocity.setZero();
     mouseTracerPosition.set(p);
-
-    if (button == BOMB_SPAWN_BUTTON) {
-      beginBombSpawn(p);
-    }
 
     if (button == MOUSE_JOINT_BUTTON) {
       spawnMouseJoint(p);
@@ -610,9 +579,6 @@ public abstract class TestbedTest
     mouseWorld.set(p);
     if (button == MOUSE_JOINT_BUTTON) {
       updateMouseJoint(p);
-    }
-    if (button == BOMB_SPAWN_BUTTON) {
-      bombMousePoint.set(p);
     }
   }
 
@@ -655,72 +621,6 @@ public abstract class TestbedTest
       m_world.destroyJoint(mouseJoint);
       mouseJoint = null;
     }
-  }
-
-  /********** BOMB ************/
-
-  private final Vec2 p = new Vec2();
-  private final Vec2 v = new Vec2();
-
-  public void lanchBomb() {
-    p.set((float) (Math.random() * 30 - 15), 30f);
-    v.set(p).mulLocal(-5f);
-    launchBomb(p, v);
-  }
-
-  private final AABB aabb = new AABB();
-
-  private void launchBomb(Vec2 position, Vec2 velocity) {
-    if (bomb != null) {
-      m_world.destroyBody(bomb);
-      bomb = null;
-    }
-    // todo optimize this
-    BodyDef bd = new BodyDef();
-    bd.type = BodyType.DYNAMIC;
-    bd.position.set(position);
-    bd.bullet = true;
-    bomb = m_world.createBody(bd);
-    bomb.setLinearVelocity(velocity);
-
-    CircleShape circle = new CircleShape();
-    circle.m_radius = 0.3f;
-
-    FixtureDef fd = new FixtureDef();
-    fd.shape = circle;
-    fd.density = 20f;
-    fd.restitution = 0;
-
-    Vec2 minV = new Vec2(position);
-    Vec2 maxV = new Vec2(position);
-
-    minV.subLocal(new Vec2(.3f, .3f));
-    maxV.addLocal(new Vec2(.3f, .3f));
-
-    aabb.lowerBound.set(minV);
-    aabb.upperBound.set(maxV);
-
-    bomb.createFixture(fd);
-  }
-
-  private void beginBombSpawn(Vec2 worldPt) {
-    bombSpawnPoint.set(worldPt);
-    bombMousePoint.set(worldPt);
-    bombSpawning = true;
-  }
-
-  private final Vec2 vel = new Vec2();
-
-  private void completeBombSpawn(Vec2 p) {
-    if (bombSpawning == false) {
-      return;
-    }
-
-    float multiplier = 30f;
-    vel.set(bombSpawnPoint).subLocal(p);
-    vel.mulLocal(multiplier);
-    launchBomb(bombSpawnPoint, vel);
-    bombSpawning = false;
   }
 
   /************ SERIALIZATION *************/
