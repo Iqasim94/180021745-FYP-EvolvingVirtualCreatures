@@ -26,6 +26,7 @@ package org.jbox2d.testbed.framework;
 import org.jbox2d.testbed.tests.ApplyForce;
 import org.jbox2d.testbed.tests.BodyTypes;
 import org.jbox2d.testbed.tests.Breakable;
+import org.jbox2d.testbed.tests.BulletTest;
 import org.jbox2d.testbed.tests.Car;
 import org.jbox2d.testbed.tests.CarTest;
 import org.jbox2d.testbed.tests.ConvexHull;
@@ -54,5 +55,7 @@ public class TestList {
     model.addTest(new EdgeShapes());
     model.addTest(new ConvexHull());
     model.addTest(new DistanceTest());
+    
+    model.addTest(new BulletTest());
   }
 }

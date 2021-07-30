@@ -68,8 +68,6 @@ public class TestbedSidePanel extends JPanel implements ChangeListener, ActionLi
   public JComboBox tests;
 
   private JButton pauseButton = new JButton("Pause");
-  private JButton stepButton = new JButton("Step");
-  private JButton resetButton = new JButton("Reset");
   private JButton quitButton = new JButton("Quit");
 
   public JButton saveButton = new JButton("Save");
@@ -161,8 +159,6 @@ public class TestbedSidePanel extends JPanel implements ChangeListener, ActionLi
     add(middle, "Center");
 
     pauseButton.setAlignmentX(CENTER_ALIGNMENT);
-    stepButton.setAlignmentX(CENTER_ALIGNMENT);
-    resetButton.setAlignmentX(CENTER_ALIGNMENT);
     saveButton.setAlignmentX(CENTER_ALIGNMENT);
     loadButton.setAlignmentX(CENTER_ALIGNMENT);
     quitButton.setAlignmentX(CENTER_ALIGNMENT);
@@ -170,19 +166,17 @@ public class TestbedSidePanel extends JPanel implements ChangeListener, ActionLi
     Box buttonGroups = Box.createHorizontalBox();
     JPanel buttons1 = new JPanel();
     buttons1.setLayout(new GridLayout(0, 1));
-    buttons1.add(resetButton);
+    buttons1.add(pauseButton);
 
     JPanel buttons2 = new JPanel();
     buttons2.setLayout(new GridLayout(0, 1));
-    buttons2.add(pauseButton);
-    buttons2.add(stepButton);
-
+    buttons2.add(saveButton);
+    buttons2.add(loadButton);
+    
     JPanel buttons3 = new JPanel();
     buttons3.setLayout(new GridLayout(0, 1));
-    buttons3.add(saveButton);
-    buttons3.add(loadButton);
     buttons3.add(quitButton);
-
+    
     buttonGroups.add(buttons1);
     buttonGroups.add(buttons2);
     buttonGroups.add(buttons3);
@@ -201,24 +195,6 @@ public class TestbedSidePanel extends JPanel implements ChangeListener, ActionLi
           pauseButton.setText("Resume");
         }
         model.getPanel().grabFocus();
-      }
-    });
-
-    stepButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        model.getSettings().singleStep = true;
-        if (!model.getSettings().pause) {
-          model.getSettings().pause = true;
-          pauseButton.setText("Resume");
-        }
-        model.getPanel().grabFocus();
-      }
-    });
-
-    resetButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        controller.reset();
       }
     });
 
