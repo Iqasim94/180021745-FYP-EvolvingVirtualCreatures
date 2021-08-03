@@ -75,7 +75,7 @@ public class BulletTest extends TestbedTest {
     m_body.setLinearVelocity(new Vec2());
     m_body.setAngularVelocity(0.0f);
 
-//    m_x = MathUtils.randomFloat(-1.0f, 1.0f);
+    m_x = MathUtils.randomFloat(-1.0f, 1.0f);
     m_bullet.setTransform(new Vec2(m_x, 10.0f), 0.0f);
     m_bullet.setLinearVelocity(new Vec2(0.0f, -50.0f));
     m_bullet.setAngularVelocity(0.0f);

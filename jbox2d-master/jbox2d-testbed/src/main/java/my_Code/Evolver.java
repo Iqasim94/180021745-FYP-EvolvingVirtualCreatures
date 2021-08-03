@@ -12,7 +12,7 @@ public class Evolver {
 	public static void main(String[] args) {
 		
 		//Routes matrix of distance of x to y.
-		int[] currentBestGenes = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+		int[] currentBestGenes = {0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 		System.out.print(Arrays.toString(currentBestGenes) + "\n");
 //		Object[] currentBestGenes = new Object[10];	
 		evolver(currentBestGenes); //Search.		
@@ -22,12 +22,11 @@ public class Evolver {
 		
 		int i = 3;
 		int x;
-		int size = currentBestGenes.length;
 		Random rand = new Random();
 		
 		while (i > 0) {
-			int gene = rand.nextInt(size-1);
-			
+			int gene = rand.nextInt(10) + 4;
+
 			if (gene == 0 || gene == 5) {
 				currentBestGenes[gene]++;
 			}

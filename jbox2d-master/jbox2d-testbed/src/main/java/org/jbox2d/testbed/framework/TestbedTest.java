@@ -63,6 +63,7 @@ import org.jbox2d.serialization.UnsupportedListener;
 import org.jbox2d.serialization.UnsupportedObjectException;
 import org.jbox2d.serialization.pb.PbDeserializer;
 import org.jbox2d.serialization.pb.PbSerializer;
+import org.jbox2d.testbed.tests.CarTest;
 
 /**
  * @author Daniel Murphy
@@ -430,7 +431,7 @@ public abstract class TestbedTest implements ContactListener, ObjectListener, Ob
 		}
 		
 		//Display timer on screen.
-		debugDraw.drawString(5, m_textLine, "Current Time: " + stopwatch.toString(), Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Elapsed Time: " + stopwatch.toString(), Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE;
 		
 		/*
@@ -695,7 +696,7 @@ public abstract class TestbedTest implements ContactListener, ObjectListener, Ob
 
 	public void postSolve(Contact contact, ContactImpulse impulse) {
 	}
-
+	
 	private final PointState[] state1 = new PointState[Settings.maxManifoldPoints];
 	private final PointState[] state2 = new PointState[Settings.maxManifoldPoints];
 	private final WorldManifold worldManifold = new WorldManifold();
