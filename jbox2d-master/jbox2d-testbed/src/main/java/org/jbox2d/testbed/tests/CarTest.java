@@ -9,10 +9,8 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
-import org.jbox2d.dynamics.joints.Joint;
 import org.jbox2d.dynamics.joints.WheelJoint;
 import org.jbox2d.dynamics.joints.WheelJointDef;
-import org.jbox2d.testbed.framework.AbstractTestbedController;
 import org.jbox2d.testbed.framework.TestbedSettings;
 import org.jbox2d.testbed.framework.TestbedTest;
 
@@ -40,6 +38,7 @@ public class CarTest extends TestbedTest {
 	protected WheelJoint m_spring2;
 
 	protected PolygonShape chassis;
+	protected PolygonShape box;
 	protected BodyDef bd;
 	protected FixtureDef fd;
 	protected WheelJointDef jd;
@@ -72,12 +71,13 @@ public class CarTest extends TestbedTest {
 		if (deserialized) {
 			return;
 		}
+
 		
 		launch();
 	}
 
 	public void launch() {
-
+		
 		// world
 			bd = new BodyDef();
 			ground = m_world.createBody(bd);
@@ -115,11 +115,10 @@ public class CarTest extends TestbedTest {
 			
 			
 		//Contact point - To touch to start new iteration.						
-			PolygonShape box = new PolygonShape();
+			box = new PolygonShape();
 			box.setAsBox(0.2f, 0.2f);
 			goal.createFixture(box, 1.0f);
 			goal.setTransform(new Vec2(10.0f, 0.75f), 0.0f); //pos of box
-			
 			
 		// The body of the car
 			chassis = new PolygonShape();
@@ -198,8 +197,9 @@ public class CarTest extends TestbedTest {
 		super.step(settings);
 		getCamera().setCamera(m_car.getPosition());
 		
-//		if (m_car.getPosition() == goal.getPosition()) {
-		if (getStepCount() % 200 == 0) {
+		if (!m_car.shouldCollide(goal)) {
+		
+//		if (getStepCount() % 500 == 0) {
 			
 			/*
 			 * Eliminates previous car
@@ -211,7 +211,7 @@ public class CarTest extends TestbedTest {
 			initTest(false);
 		}
 	}
-
+	
 	@Override
 	public String getTestName() {
 		return "CarTest";
