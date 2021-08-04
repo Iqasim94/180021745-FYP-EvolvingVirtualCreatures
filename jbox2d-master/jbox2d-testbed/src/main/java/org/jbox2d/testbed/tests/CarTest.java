@@ -8,7 +8,9 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.dynamics.contacts.Contact;
 import org.jbox2d.dynamics.joints.WheelJoint;
 import org.jbox2d.dynamics.joints.WheelJointDef;
 import org.jbox2d.testbed.framework.TestbedSettings;
@@ -41,7 +43,11 @@ public class CarTest extends TestbedTest {
 	protected PolygonShape box;
 	protected BodyDef bd;
 	protected FixtureDef fd;
+	protected FixtureDef fd2;
 	protected WheelJointDef jd;
+	
+	public Fixture m_sensor;
+	public boolean hasFin;
 	
 	/*
 	 * Record/Gene instantiations
@@ -72,7 +78,7 @@ public class CarTest extends TestbedTest {
 			return;
 		}
 
-		
+		hasFin = false;
 		launch();
 	}
 
@@ -114,11 +120,19 @@ public class CarTest extends TestbedTest {
 			ground.createFixture(fd);
 			
 			
-		//Contact point - To touch to start new iteration.						
+			
+		//"Point B" - To touch to start new iteration.				
 			box = new PolygonShape();
 			box.setAsBox(0.2f, 0.2f);
-			goal.createFixture(box, 1.0f);
-			goal.setTransform(new Vec2(10.0f, 0.75f), 0.0f); //pos of box
+			box.setAsBox(0.2f, 0.2f, new Vec2(10.0f, 0.75f), 0);
+			
+			fd2 = new FixtureDef();
+			fd2.shape = box;
+			fd2.isSensor = true;
+			m_sensor = goal.createFixture(fd2);
+			m_sensor.setUserData(fd2);
+			
+			
 			
 		// The body of the car
 			chassis = new PolygonShape();
@@ -143,7 +157,8 @@ public class CarTest extends TestbedTest {
 			bd.position.set(0.0f, 1.0f);
 			m_car = m_world.createBody(bd);
 			m_car.createFixture(chassis, 1.0f);
-
+			m_car.setUserData(fd);
+			
 			// Create wheel 1
 			fd.shape = circle1;
 			fd.density = 1.0f;
@@ -197,9 +212,7 @@ public class CarTest extends TestbedTest {
 		super.step(settings);
 		getCamera().setCamera(m_car.getPosition());
 		
-		if (!m_car.shouldCollide(goal)) {
-		
-//		if (getStepCount() % 500 == 0) {
+		if (hasFin == true || getStepCount() % 5000 == 0) {
 			
 			/*
 			 * Eliminates previous car
@@ -212,9 +225,28 @@ public class CarTest extends TestbedTest {
 		}
 	}
 	
+	public void beginContact(Contact cp) {
+		
+		Fixture fixtureA = cp.getFixtureA();
+		Fixture fixtureB = cp.getFixtureB();
+	
+		if(fixtureA == m_sensor) {
+			Object userData = fixtureB.getBody().getUserData();
+			if (userData != null) {
+				hasFin = true;
+			}
+		}
+		
+		if(fixtureB == m_sensor) {
+			Object userData = fixtureA.getBody().getUserData();
+			if (userData != null) {
+				hasFin = true;
+			}
+		}
+	}	
+	
 	@Override
 	public String getTestName() {
 		return "CarTest";
-	}
-
+	}
 }

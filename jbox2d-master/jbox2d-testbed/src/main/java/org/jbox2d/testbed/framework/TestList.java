@@ -29,6 +29,7 @@ import org.jbox2d.testbed.tests.Breakable;
 import org.jbox2d.testbed.tests.BulletTest;
 import org.jbox2d.testbed.tests.Car;
 import org.jbox2d.testbed.tests.CarTest;
+import org.jbox2d.testbed.tests.CharacterCollision;
 import org.jbox2d.testbed.tests.ConvexHull;
 import org.jbox2d.testbed.tests.ConveyorBelt;
 import org.jbox2d.testbed.tests.DistanceTest;
@@ -57,5 +58,6 @@ public class TestList {
     model.addTest(new DistanceTest());
     
     model.addTest(new BulletTest());
+    model.addTest(new CharacterCollision());
   }
 }
