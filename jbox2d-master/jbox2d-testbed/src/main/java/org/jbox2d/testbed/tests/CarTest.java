@@ -24,23 +24,19 @@ import org.jbox2d.testbed.framework.TestbedTest;
 
 public class CarTest extends TestbedTest {
 
-	// Initialization
+//Initialization
 	public Body m_car;
 	public Body m_wheel1;
-	public Body m_wheel2;
-		
-	protected WheelJoint m_spring1;
-	protected WheelJoint m_spring2;
-	protected WheelJointDef jd;
+	public Body m_wheel2;		
+	public WheelJoint m_spring1;
+	public WheelJoint m_spring2;
+	public WheelJointDef jd;
 	
-	protected float m_zeta = 0.7f; // Damping Ratio: Resistive force reactionary friction.
+	public Fixture m_sensor; //Contact sensor
+	public boolean hasFin; //If contact has been made with ideal objects
+	public float m_zeta = 0.7f; // Damping Ratio: Resistive force reactionary friction.
 	
-	public Fixture m_sensor;
-	public boolean hasFin;
-	
-	/*
-	 * Record/Gene instantiations
-	 */
+//Record/Gene instantiations
 	public Object[] Record; //Record List
 	public int run; //Which iteration
 //	public StopWatch oldBest = 99:59:59.999; //Fitness to compete against
@@ -48,17 +44,14 @@ public class CarTest extends TestbedTest {
 	public int evolutions; //Number of beneficial evolutions
 	public float wheelSize1;
 	public float wheelSize2;
-	public boolean wheel1Enabled;
-	public boolean wheel2Enabled;
-	public float m_speed = -40.0f; //Max rotational speed of the wheel.
-//	public float m_speed1;
-//	public float m_speed2;
-//	public float m_torque1; //maximum torque available for the wheel/Rate of Acceleration.
-//	public float m_torque2;
-	public float m_hz = 4.0f; //Suspension dampening ratio. Underdamped < 1 > Overdamped
-//	public float m_hz1;
-//	public float m_hz2;
-	
+	public boolean wheel1Enabled = true;
+	public boolean wheel2Enabled = true;
+	public float m_speed1 = -10.0f; //Max rotational speed of the wheel.
+	public float m_speed2 = -10.0f;
+	public float m_torque1 = 10.0f; //Max torque available for the wheel/Rate of Acceleration.
+	public float m_torque2 = 10.0f;
+	public float m_hz1 = 4.0f; //Suspension dampening ratio. Underdamped < 1 > Overdamped
+	public float m_hz2 = 4.0f;
 	
 	@Override
 	public void initTest(boolean deserialized) {
@@ -123,6 +116,7 @@ public class CarTest extends TestbedTest {
 		//"Point B" - To touch to start new iteration.				
 			PolygonShape box = new PolygonShape();
 			box.setAsBox(0.2f, 0.2f);
+			//box.setAsBox(0.2f, 0.2f, new Vec2(198.0f, 0.75f), 0); //For Straight Map
 			box.setAsBox(0.2f, 0.2f, new Vec2(264.0f, 20.75f), 0);
 			
 			FixtureDef fd2 = new FixtureDef();
@@ -179,21 +173,21 @@ public class CarTest extends TestbedTest {
 			jd = new WheelJointDef();
 			Vec2 axis = new Vec2(0.0f, 1.0f);
 
-			// Define joint 1
+		// Define joint 1
 			jd.initialize(m_car, m_wheel1, m_wheel1.getPosition(), axis);
-			jd.motorSpeed = m_speed;
-			jd.maxMotorTorque = 10.0f;
-			jd.enableMotor = true;
-			jd.frequencyHz = m_hz;
+			jd.motorSpeed = m_speed1;
+			jd.maxMotorTorque = m_torque1;
+			jd.enableMotor = wheel1Enabled;
+			jd.frequencyHz = m_hz1;
 			jd.dampingRatio = m_zeta;
 			m_spring1 = (WheelJoint) m_world.createJoint(jd);
 
-			// Define joint 2
+		// Define joint 2
 			jd.initialize(m_car, m_wheel2, m_wheel2.getPosition(), axis);
-			jd.motorSpeed = m_speed;
-			jd.maxMotorTorque = 10.0f;
-			jd.enableMotor = true;
-			jd.frequencyHz = m_hz;
+			jd.motorSpeed = m_speed2;
+			jd.maxMotorTorque = m_torque2;
+			jd.enableMotor = wheel2Enabled;
+			jd.frequencyHz = m_hz2;
 			jd.dampingRatio = m_zeta;
 			m_spring2 = (WheelJoint) m_world.createJoint(jd);
 	}
@@ -204,9 +198,7 @@ public class CarTest extends TestbedTest {
 	}
 
 	@Override
-	/*
-	 * Call parent class to run and step forward animation.
-	 */
+	//Call parent class to run and step forward animation.
 	public synchronized void step(TestbedSettings settings) {
 		super.step(settings);
 		getCamera().setCamera(m_car.getPosition());
@@ -221,11 +213,8 @@ public class CarTest extends TestbedTest {
 		}
 	}
 	
-	/*
-	 * Detects collisions between car and goal
-	 */
+	//Detects collisions between car and goal
 	public void beginContact(Contact cp) {
-		
 		Fixture fixtureA = cp.getFixtureA();
 		Fixture fixtureB = cp.getFixtureB();
 	
@@ -241,8 +230,7 @@ public class CarTest extends TestbedTest {
 			if (userData != null) {
 				hasFin = true;
 			}
-		}
-		
+		}	
 	}	
 	
 	@Override
