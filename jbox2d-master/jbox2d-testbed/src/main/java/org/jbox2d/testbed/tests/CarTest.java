@@ -25,26 +25,15 @@ import org.jbox2d.testbed.framework.TestbedTest;
 public class CarTest extends TestbedTest {
 
 	// Initialization
-	protected Body ground;
-	protected Body m_car;
-	public CircleShape circle1; //Wheel shape
-	public Body m_wheel1; //Wheel object
-	public CircleShape circle2;
+	public Body m_car;
+	public Body m_wheel1;
 	public Body m_wheel2;
-	
-	public Body goal;
-	
-	protected float m_zeta = 0.7f; // Damping Ratio: Resistive force reactionary friction.
-	
+		
 	protected WheelJoint m_spring1;
 	protected WheelJoint m_spring2;
-
-	protected PolygonShape chassis;
-	protected PolygonShape box;
-	protected BodyDef bd;
-	protected FixtureDef fd;
-	protected FixtureDef fd2;
 	protected WheelJointDef jd;
+	
+	protected float m_zeta = 0.7f; // Damping Ratio: Resistive force reactionary friction.
 	
 	public Fixture m_sensor;
 	public boolean hasFin;
@@ -70,33 +59,30 @@ public class CarTest extends TestbedTest {
 //	public float m_hz1;
 //	public float m_hz2;
 	
-
 	
 	@Override
 	public void initTest(boolean deserialized) {
 		if (deserialized) {
 			return;
 		}
-
 		hasFin = false;
 		launch();
 	}
 
 	public void launch() {
-		
 		// world
-			bd = new BodyDef();
-			ground = m_world.createBody(bd);
-			goal = m_world.createBody(bd);
+			BodyDef bd = new BodyDef();
+			Body ground = m_world.createBody(bd);
+			Body goal = m_world.createBody(bd);
 
 			EdgeShape shape = new EdgeShape();
 
-			fd = new FixtureDef();
+			FixtureDef fd = new FixtureDef();
 			fd.shape = shape;
 			fd.density = 0.0f;
 			fd.friction = 0.7f;
 
-/*			//Straight
+			//Straight
 			shape.set(new Vec2(-20.0f, 0.0f), new Vec2(75.0f, 0.0f));
 			ground.createFixture(fd);
 
@@ -112,21 +98,18 @@ public class CarTest extends TestbedTest {
 			shape.set(new Vec2(125.0f, 0.0f), new Vec2(200.0f, 0.0f));
 			ground.createFixture(fd);
 
-			//Wall
-			//shape.set(new Vec2(200.0f, 0.0f), new Vec2(200.0f, 50.0f));
-			//ground.createFixture(fd);
-*/
+/*			//Straight Map
 			shape.set(new Vec2(-20.0f, 0.0f), new Vec2(200.0f, 0.0f));
 			ground.createFixture(fd);
-			
+*/			
 			
 			
 		//"Point B" - To touch to start new iteration.				
-			box = new PolygonShape();
+			PolygonShape box = new PolygonShape();
 			box.setAsBox(0.2f, 0.2f);
-			box.setAsBox(0.2f, 0.2f, new Vec2(10.0f, 0.75f), 0);
+			box.setAsBox(0.2f, 0.2f, new Vec2(195.0f, 0.75f), 0);
 			
-			fd2 = new FixtureDef();
+			FixtureDef fd2 = new FixtureDef();
 			fd2.shape = box;
 			fd2.isSensor = true;
 			m_sensor = goal.createFixture(fd2);
@@ -135,7 +118,7 @@ public class CarTest extends TestbedTest {
 			
 			
 		// The body of the car
-			chassis = new PolygonShape();
+			PolygonShape chassis = new PolygonShape();
 			Vec2 vertices[] = new Vec2[8]; // Num of vectors in shape, 6 = chassis + 1 per wheel
 			vertices[0] = new Vec2(-1.5f, -0.5f); // Bottom chassis 1
 			vertices[1] = new Vec2(1.5f, -0.5f); // Bottom chassis 2
@@ -146,10 +129,10 @@ public class CarTest extends TestbedTest {
 			chassis.set(vertices, 6);
 
 		// The wheel
-			circle1 = new CircleShape();
+			CircleShape circle1 = new CircleShape();
 			circle1.m_radius = 0.4f;
 			
-			circle2 = new CircleShape();
+			CircleShape circle2 = new CircleShape();
 			circle2.m_radius = 0.4f;
 
 			// Create and position car body
@@ -213,10 +196,7 @@ public class CarTest extends TestbedTest {
 		getCamera().setCamera(m_car.getPosition());
 		
 		if (hasFin == true || getStepCount() % 5000 == 0) {
-			
-			/*
-			 * Eliminates previous car
-			 */
+
 			m_car.getWorld().destroyBody(m_car);
 			m_wheel1.getWorld().destroyBody(m_wheel1);
 			m_wheel2.getWorld().destroyBody(m_wheel2);
@@ -243,6 +223,7 @@ public class CarTest extends TestbedTest {
 				hasFin = true;
 			}
 		}
+		
 	}	
 	
 	@Override
