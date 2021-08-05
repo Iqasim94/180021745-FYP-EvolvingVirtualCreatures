@@ -43,17 +43,17 @@ public class CarTest extends TestbedTest {
 	public Object[] bestGenes; //Record List
 	public Object[] currentGenes; //Record List
 	public int run = 0; //Which iteration
-	public double currentBest =  15e10; //Fitness to compete against - 3mins
+	public double currentBest =  6e+10; //Fitness to compete against - 2mins
 	public double recordedTime; //Fitness of genetics
 	public int evolutions = 0; //Number of beneficial evolutions
 	public float wheelSize1 = 0.4f;
 	public float wheelSize2 = 0.4f;
 	public boolean wheel1Enabled = true;
 	public boolean wheel2Enabled = true;
-	public float m_speed1 = -40.0f; //Max rotational speed of the wheel.
-	public float m_speed2 = -40.0f;
-	public float m_torque1 = 15.0f; //Max torque available for the wheel/Rate of Acceleration.
-	public float m_torque2 = 15.0f;
+	public float m_speed1 = -30.0f; //Max rotational speed of the wheel.
+	public float m_speed2 = -30.0f;
+	public float m_torque1 = 20.0f; //Max torque available for the wheel/Rate of Acceleration.
+	public float m_torque2 = 20.0f;
 	public float m_hz1 = 4.0f; //Suspension dampening ratio. Underdamped < 1 > Overdamped
 	public float m_hz2 = 4.0f;
 	
