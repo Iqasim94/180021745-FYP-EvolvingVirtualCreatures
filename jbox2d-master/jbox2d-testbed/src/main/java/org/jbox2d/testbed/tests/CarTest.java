@@ -15,6 +15,7 @@ import org.jbox2d.dynamics.joints.WheelJoint;
 import org.jbox2d.dynamics.joints.WheelJointDef;
 import org.jbox2d.testbed.framework.TestbedSettings;
 import org.jbox2d.testbed.framework.TestbedTest;
+import my_Code.Evolver;
 
 /**
  * @author Ishmail Qasim
@@ -36,20 +37,23 @@ public class CarTest extends TestbedTest {
 	public boolean hasFin; //If contact has been made with ideal objects
 	public float m_zeta = 0.7f; // Damping Ratio: Resistive force reactionary friction.
 	
+	public StopWatch stopwatch = StopWatch.createStarted();
+	
 //Record/Gene instantiations
-	public Object[] Record; //Record List
-	public int run; //Which iteration
-//	public StopWatch oldBest = 99:59:59.999; //Fitness to compete against
-	public StopWatch recordedTime; //Fitness of genetics
-	public int evolutions; //Number of beneficial evolutions
-	public float wheelSize1;
-	public float wheelSize2;
+	public Object[] bestGenes; //Record List
+	public Object[] currentGenes; //Record List
+	public int run = 0; //Which iteration
+	public double currentBest =  15e10; //Fitness to compete against - 3mins
+	public double recordedTime; //Fitness of genetics
+	public int evolutions = 0; //Number of beneficial evolutions
+	public float wheelSize1 = 0.4f;
+	public float wheelSize2 = 0.4f;
 	public boolean wheel1Enabled = true;
 	public boolean wheel2Enabled = true;
-	public float m_speed1 = -10.0f; //Max rotational speed of the wheel.
-	public float m_speed2 = -10.0f;
-	public float m_torque1 = 10.0f; //Max torque available for the wheel/Rate of Acceleration.
-	public float m_torque2 = 10.0f;
+	public float m_speed1 = -40.0f; //Max rotational speed of the wheel.
+	public float m_speed2 = -40.0f;
+	public float m_torque1 = 15.0f; //Max torque available for the wheel/Rate of Acceleration.
+	public float m_torque2 = 15.0f;
 	public float m_hz1 = 4.0f; //Suspension dampening ratio. Underdamped < 1 > Overdamped
 	public float m_hz2 = 4.0f;
 	
@@ -63,6 +67,15 @@ public class CarTest extends TestbedTest {
 	}
 
 	public void launch() {
+	
+		Object[] bestGenes = {run, currentBest, recordedTime, evolutions,
+				wheelSize1, wheel1Enabled, m_speed1, m_torque1, m_hz1,
+				wheelSize2, wheel2Enabled, m_speed2, m_torque2, m_hz2};
+		
+		Object[] currentGenes = {run, currentBest, recordedTime, evolutions,
+				wheelSize1, wheel1Enabled, m_speed1, m_torque1, m_hz1,
+				wheelSize2, wheel2Enabled, m_speed2, m_torque2, m_hz2};
+		
 	//World
 			BodyDef bd = new BodyDef();
 			Body ground = m_world.createBody(bd);
@@ -138,9 +151,9 @@ public class CarTest extends TestbedTest {
 
 		//Wheels
 			CircleShape circle1 = new CircleShape();
-			circle1.m_radius = 0.4f;
+			circle1.m_radius = (float) currentGenes[4];
 			CircleShape circle2 = new CircleShape();
-			circle2.m_radius = 0.4f;
+			circle2.m_radius = (float) currentGenes[9];
 
 			// Create and position car body
 			bd.type = BodyType.DYNAMIC;
@@ -175,19 +188,19 @@ public class CarTest extends TestbedTest {
 
 		// Define joint 1
 			jd.initialize(m_car, m_wheel1, m_wheel1.getPosition(), axis);
-			jd.motorSpeed = m_speed1;
-			jd.maxMotorTorque = m_torque1;
-			jd.enableMotor = wheel1Enabled;
-			jd.frequencyHz = m_hz1;
+			jd.enableMotor = (boolean) currentGenes[5];
+			jd.motorSpeed = (float) currentGenes[6];
+			jd.maxMotorTorque = (float) currentGenes[7];
+			jd.frequencyHz = (float) currentGenes[8];
 			jd.dampingRatio = m_zeta;
 			m_spring1 = (WheelJoint) m_world.createJoint(jd);
 
 		// Define joint 2
 			jd.initialize(m_car, m_wheel2, m_wheel2.getPosition(), axis);
-			jd.motorSpeed = m_speed2;
-			jd.maxMotorTorque = m_torque2;
-			jd.enableMotor = wheel2Enabled;
-			jd.frequencyHz = m_hz2;
+			jd.enableMotor = (boolean) currentGenes[10];
+			jd.motorSpeed = (float) currentGenes[11];
+			jd.maxMotorTorque = (float) currentGenes[12];
+			jd.frequencyHz = (float) currentGenes[13];
 			jd.dampingRatio = m_zeta;
 			m_spring2 = (WheelJoint) m_world.createJoint(jd);
 	}
@@ -203,12 +216,18 @@ public class CarTest extends TestbedTest {
 		super.step(settings);
 		getCamera().setCamera(m_car.getPosition());
 		
-		if (hasFin == true || getStepCount() % 5000 == 0) {
-
+		//if contact has been made with the goal node or 1.5 times the currentBest time has passed...
+		if (hasFin == true || stopwatch.getNanoTime() > currentBest*1.5) {
+			
+			if (stopwatch.getNanoTime() > currentBest*1.5) {
+				recordedTime = currentBest*1.5;
+			}
+			
 			m_car.getWorld().destroyBody(m_car);
 			m_wheel1.getWorld().destroyBody(m_wheel1);
 			m_wheel2.getWorld().destroyBody(m_wheel2);
 			
+			stopwatch.reset();
 			initTest(false);
 		}
 	}
@@ -231,8 +250,12 @@ public class CarTest extends TestbedTest {
 				hasFin = true;
 			}
 		}	
-	}	
+	}
 	
+/*	public StopWatch getStopWatch() {
+		return stopwatch;
+	}
+*/	
 	@Override
 	public String getTestName() {
 		return "CarTest";

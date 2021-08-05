@@ -110,7 +110,7 @@ public abstract class TestbedTest implements ContactListener, ObjectListener, Ob
 
 	private final Transform identity = new Transform();
 
-	public StopWatch stopwatch;
+	public StopWatch elapsedTimer;
 
 	public TestbedTest() {
 		identity.setIdentity();
@@ -187,7 +187,7 @@ public abstract class TestbedTest implements ContactListener, ObjectListener, Ob
 
 	public void init(TestbedModel model) {
 
-		stopwatch = StopWatch.createStarted();
+		elapsedTimer = StopWatch.createStarted();
 		this.model = model;
 
 		Vec2 gravity = new Vec2(0, -10f);
@@ -423,17 +423,22 @@ public abstract class TestbedTest implements ContactListener, ObjectListener, Ob
 		debugDraw.drawString(5, m_textLine, "Info", color4);
 		m_textLine += TEXT_LINE_SPACE;
 
-		if (settings.pause && !stopwatch.isSuspended()) {
-			stopwatch.suspend();
+				
+		if (settings.pause && !elapsedTimer.isSuspended()) {
+			elapsedTimer.suspend();
 		}
-		if (!settings.pause && stopwatch.isSuspended()) {
-			stopwatch.resume();
+		if (!settings.pause && elapsedTimer.isSuspended()) {
+			elapsedTimer.resume();
 		}
-		
-		//Display timer on screen.
-		debugDraw.drawString(5, m_textLine, "Elapsed Time: " + stopwatch.toString(), Color3f.WHITE);
+				
+		// Display timer on screen.
+		debugDraw.drawString(5, m_textLine, "Elapsed Time: " + elapsedTimer, Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE;
-		
+		// Display timer on screen.
+/*		
+		debugDraw.drawString(5, m_textLine, "Current Time: " + CarTest.getStopWatch().toString(), Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE;
+*/
 		/*
 		 * debugDraw.drawString(5, m_textLine, "Best Time: " + (int) model.getBestFps(),
 		 * Color3f.WHITE); m_textLine += TEXT_LINE_SPACE; debugDraw.drawString(5,
@@ -696,7 +701,7 @@ public abstract class TestbedTest implements ContactListener, ObjectListener, Ob
 
 	public void postSolve(Contact contact, ContactImpulse impulse) {
 	}
-	
+
 	private final PointState[] state1 = new PointState[Settings.maxManifoldPoints];
 	private final PointState[] state2 = new PointState[Settings.maxManifoldPoints];
 	private final WorldManifold worldManifold = new WorldManifold();
