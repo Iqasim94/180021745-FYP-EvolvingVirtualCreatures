@@ -422,23 +422,65 @@ public abstract class TestbedTest implements ContactListener, ObjectListener, Ob
 
 		debugDraw.drawString(5, m_textLine, "Info", color4);
 		m_textLine += TEXT_LINE_SPACE;
-
-				
+		
 		if (settings.pause && !elapsedTimer.isSuspended()) {
 			elapsedTimer.suspend();
+			CarTest.stopwatch.suspend();
 		}
 		if (!settings.pause && elapsedTimer.isSuspended()) {
 			elapsedTimer.resume();
+			CarTest.stopwatch.resume();
 		}
 				
 		// Display timer on screen.
 		debugDraw.drawString(5, m_textLine, "Elapsed Time: " + elapsedTimer, Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE;
 		// Display timer on screen.
-/*		
-		debugDraw.drawString(5, m_textLine, "Current Time: " + CarTest.getStopWatch().toString(), Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Time to Beat: " + CarTest.timetime, Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE; //BestTime
+		
+		if (CarTest.stopwatch.getNanoTime() < CarTest.currentBest) {
+			debugDraw.drawString(5, m_textLine, "Current Time: " + CarTest.stopwatch.toString(), Color3f.WHITE);
+			m_textLine += TEXT_LINE_SPACE;
+		} else {
+			debugDraw.drawString(5, m_textLine, "Current Time: " + CarTest.stopwatch.toString(), Color3f.RED);
+			m_textLine += TEXT_LINE_SPACE;	
+		}
+
+	//Display Genes
+		debugDraw.drawString(5, m_textLine, "", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE;
-*/
+		debugDraw.drawString(5, m_textLine, "Run: " + CarTest.run, Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE; //Iteration
+		debugDraw.drawString(5, m_textLine, "Evolution: " + CarTest.evolutions, Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE; //Evolutions
+		
+		debugDraw.drawString(5, m_textLine, "", Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE;
+		debugDraw.drawString(5, m_textLine, "Wheel 1: ", Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE; //Header
+		debugDraw.drawString(5, m_textLine, "Wheel Radius: " + CarTest.wheelSize1 + "f", Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE; //Wheel size 1
+		debugDraw.drawString(5, m_textLine, "Wheel Speed: " + CarTest.m_speed1*-1 + "f", Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE; //Speed 1
+		debugDraw.drawString(5, m_textLine, "Torque: " + CarTest.m_torque1 + "f", Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE; //Torque 1
+		debugDraw.drawString(5, m_textLine, "Suspension Stiffness: " + CarTest.m_hz1 + "f", Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE; //Suspension Dampening 1
+
+		debugDraw.drawString(5, m_textLine, "", Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE;
+		debugDraw.drawString(5, m_textLine, "Wheel 2: ", Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE; //Header 2
+		debugDraw.drawString(5, m_textLine, "Wheel Radius: " + CarTest.wheelSize2 + "f", Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE; //Wheel size 2
+		debugDraw.drawString(5, m_textLine, "Wheel Speed: " + CarTest.m_speed2*-1 + "f", Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE; //Speed 2
+		debugDraw.drawString(5, m_textLine, "Torque: " + CarTest.m_torque2 + "f", Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE; //Torque 2
+		debugDraw.drawString(5, m_textLine, "Suspension Stiffness: " + CarTest.m_hz2 + "f", Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE; //Suspension Dampening 2
+		
 		/*
 		 * debugDraw.drawString(5, m_textLine, "Best Time: " + (int) model.getBestFps(),
 		 * Color3f.WHITE); m_textLine += TEXT_LINE_SPACE; debugDraw.drawString(5,
@@ -468,7 +510,7 @@ public abstract class TestbedTest implements ContactListener, ObjectListener, Ob
 		 * for (String s : statsList) { debugDraw.drawString(5, m_textLine, s,
 		 * Color3f.WHITE); m_textLine += TEXT_LINE_SPACE; } m_textLine +=
 		 * TEXT_SECTION_SPACE; }
-		 */
+		 
 		if (!textList.isEmpty()) {
 
 			debugDraw.drawString(5, m_textLine, "World mouse position: " + mouseWorld.toString(), Color3f.WHITE);
@@ -502,7 +544,7 @@ public abstract class TestbedTest implements ContactListener, ObjectListener, Ob
 
 			debugDraw.drawSegment(p1, p2, mouseColor);
 		}
-
+*/
 		if (settings.getSetting(TestbedSettings.DrawContactPoints).enabled) {
 			final float k_impulseScale = 0.1f;
 			final float axisScale = 0.3f;
