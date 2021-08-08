@@ -20,13 +20,11 @@ public class CSVWriter {
 			sb.append("Evolutions");sb.append(",");
 			
 			sb.append("Wheel1 Size");sb.append(",");
-			sb.append("Wheel1 Motor Enabled");sb.append(",");
 			sb.append("Wheel1 speed");sb.append(",");
 			sb.append("Wheel1 maxTorque");sb.append(",");
 			sb.append("Wheel1 dampingRatio");sb.append(",");
 			
 			sb.append("Wheel2 Size");sb.append(",");
-			sb.append("Wheel2 Motor Enabled");sb.append(",");
 			sb.append("Wheel2 speed");sb.append(",");
 			sb.append("Wheel2 maxTorque");sb.append(",");
 			sb.append("Wheel2 dampingRatio");sb.append("\n");

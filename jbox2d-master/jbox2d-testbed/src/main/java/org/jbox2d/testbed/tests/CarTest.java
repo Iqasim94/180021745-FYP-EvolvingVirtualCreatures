@@ -38,10 +38,11 @@ public class CarTest extends TestbedTest {
 	public float m_zeta = 0.7f; // Damping Ratio: Resistive force reactionary friction.
 	
 	public static StopWatch stopwatch;
-	public static String timetime = "00:02:00.000";
+	public static String bestTimeVisualizer = "00:02:00.000";
 	
 //Record/Gene instantiations
-	public static Object[] currentGenes; // Record List
+/*	public static Object[] bestGenes = new Object[12]; // Previous Best List
+	public static Object[] currentGenes = new Object[12]; // Record List
 	public static int run = 0; // Which iteration
 	public static double currentBest = 6e+10; // Fitness to compete against - 2mins starting
 	public static double recordedTime; // Fitness of genetics
@@ -53,24 +54,24 @@ public class CarTest extends TestbedTest {
 	public static float m_speed2 = -40.0f; // Front wheel
 	public static float m_torque1 = 40.0f; // Max torque available for the wheel/Rate of Acceleration.
 	public static float m_torque2 = 40.0f;
-	public static float m_hz1 = 2.5f; // Suspension dampening ratio.
+	public static float m_hz1 = 2.5f; // Suspension dampening ratio. Underdamped <1> Overdamped
 	public static float m_hz2 = 2.5f;
-
+*/
+	public static Object[] currentGenes = {0, 6e+10, 0.0, 0, 0.4f, -40.0f, 40.0f, 2.5f, 0.4f, -40.0f, 40.0f, 2.5f};
+	public static Object[] bestGenes = {0, 6e+10, 0.0, 0, 0.4f, -40.0f, 40.0f, 2.5f, 0.4f, -40.0f, 40.0f, 2.5f};
+	
 	@Override
 	public void initTest(boolean deserialized) {
 		if (deserialized) {
 			return;
 		}
-		
-		Object[] currentGenes = new Object[12];
-
 		stopwatch = StopWatch.createStarted();
 		hasFin = false;
 		launch();
 	}
 
 	public void launch() {
-
+		
 	// World
 		BodyDef bd = new BodyDef();
 		Body ground = m_world.createBody(bd);
@@ -149,9 +150,9 @@ public class CarTest extends TestbedTest {
 
 	// Wheels
 		CircleShape circle1 = new CircleShape();
-		circle1.m_radius = wheelSize1;
+		circle1.m_radius = (float) currentGenes[4];
 		CircleShape circle2 = new CircleShape();
-		circle2.m_radius = wheelSize2;
+		circle2.m_radius = (float) currentGenes[8];
 
 	// Create and position car body
 		bd.type = BodyType.DYNAMIC;
@@ -187,18 +188,18 @@ public class CarTest extends TestbedTest {
 	// Define joint 1
 		jd.initialize(m_car, m_wheel1, m_wheel1.getPosition(), axis);
 		jd.enableMotor = true;
-		jd.motorSpeed = m_speed1;
-		jd.maxMotorTorque = m_torque1;
-		jd.frequencyHz = m_hz1;
+		jd.motorSpeed = (float) currentGenes[5];
+		jd.maxMotorTorque = (float) currentGenes[6];
+		jd.frequencyHz = (float) currentGenes[7];
 		jd.dampingRatio = m_zeta;
 		m_spring1 = (WheelJoint) m_world.createJoint(jd);
 
 	// Define joint 2
 		jd.initialize(m_car, m_wheel2, m_wheel2.getPosition(), axis);
 		jd.enableMotor = true;
-		jd.motorSpeed = m_speed2;
-		jd.maxMotorTorque = m_torque2;
-		jd.frequencyHz = m_hz2;
+		jd.motorSpeed = (float) currentGenes[9];
+		jd.maxMotorTorque = (float) currentGenes[10];
+		jd.frequencyHz = (float) currentGenes[7];
 		jd.dampingRatio = m_zeta;
 		m_spring2 = (WheelJoint) m_world.createJoint(jd);
 	}
@@ -208,33 +209,43 @@ public class CarTest extends TestbedTest {
 		return 15;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	// Call parent class to run and step forward animation.
 	public synchronized void step(TestbedSettings settings) {
 		super.step(settings);
 		getCamera().setCamera(m_car.getPosition());
-
+		
 		// if contact has been made with the goal node or 1.5 times the currentBest time
 		// has passed...
-		if (hasFin == true || stopwatch.getNanoTime() > currentBest * 1.5) {
-			
+		if (hasFin == true || stopwatch.getNanoTime() > new Double(CarTest.currentGenes[1].toString()) * 1.5) {
+						
 			stopwatch.stop();
 			
-			run++;
-
-			if (stopwatch.getNanoTime() > currentBest * 1.5) {
-				recordedTime = currentBest * 1.5;
+			if (stopwatch.getNanoTime() > new Double(CarTest.currentGenes[1].toString()) * 1.5) { //If did not complete course
+				currentGenes[2] = new Double(CarTest.currentGenes[1].toString()) * 1.5; //Replace recorded time
 			}
-			else if (hasFin == true && stopwatch.getNanoTime() < currentBest) {
-				currentBest = stopwatch.getNanoTime();
-				timetime = stopwatch.toString();
+			else if (hasFin == true && stopwatch.getNanoTime() < new Double(CarTest.currentGenes[1].toString())) { //If higher fitness
+				currentGenes[1] = stopwatch.getNanoTime(); //Replace best time
+				bestTimeVisualizer = stopwatch.toString();
+				
+				int evolved = (int) currentGenes[3]; //iterate evolution
+				currentGenes[3] = evolved+1;
+				
+				for (int i= 0; i < currentGenes.length - 1; i++) { //make current genes best genes
+					bestGenes[i] = currentGenes[i];
+				}
 			}
 
 			m_car.getWorld().destroyBody(m_car);
 			m_wheel1.getWorld().destroyBody(m_wheel1);
 			m_wheel2.getWorld().destroyBody(m_wheel2);
-
-//			stopwatch.reset();
+			
+			int v = (int) bestGenes[0];
+			bestGenes[0] = v + 1;
+			//v+1 works but v++ doesn't????
+			currentGenes = Evolver.evolver(bestGenes);
+			
 			initTest(false);
 		}
 	}

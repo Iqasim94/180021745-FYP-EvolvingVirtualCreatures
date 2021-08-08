@@ -369,6 +369,7 @@ public abstract class TestbedTest implements ContactListener, ObjectListener, Ob
 	private final ParticleVelocityQueryCallback pcallback = new ParticleVelocityQueryCallback();
 	private final AABB paabb = new AABB();
 
+	@SuppressWarnings("deprecation")
 	public void step(TestbedSettings settings) {
 		float hz = settings.getSetting(TestbedSettings.Hz).value;
 		float timeStep = hz > 0f ? 1f / hz : 0;
@@ -436,10 +437,10 @@ public abstract class TestbedTest implements ContactListener, ObjectListener, Ob
 		debugDraw.drawString(5, m_textLine, "Elapsed Time: " + elapsedTimer, Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE;
 		// Display timer on screen.
-		debugDraw.drawString(5, m_textLine, "Time to Beat: " + CarTest.timetime, Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Time to Beat: " + CarTest.bestTimeVisualizer, Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //BestTime
-		
-		if (CarTest.stopwatch.getNanoTime() < CarTest.currentBest) {
+				
+		if (CarTest.stopwatch.getNanoTime() < new Double(CarTest.currentGenes[1].toString())) {
 			debugDraw.drawString(5, m_textLine, "Current Time: " + CarTest.stopwatch.toString(), Color3f.WHITE);
 			m_textLine += TEXT_LINE_SPACE;
 		} else {
@@ -450,36 +451,36 @@ public abstract class TestbedTest implements ContactListener, ObjectListener, Ob
 	//Display Genes
 		debugDraw.drawString(5, m_textLine, "", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE;
-		debugDraw.drawString(5, m_textLine, "Run: " + CarTest.run, Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Run: " + CarTest.bestGenes[0], Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Iteration
-		debugDraw.drawString(5, m_textLine, "Evolution: " + CarTest.evolutions, Color3f.WHITE);
-		m_textLine += TEXT_LINE_SPACE; //Evolutions
-		
+		debugDraw.drawString(5, m_textLine, "Evolution: " + CarTest.bestGenes[3], Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE; //Evolutions	
+			
 		debugDraw.drawString(5, m_textLine, "", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE;
 		debugDraw.drawString(5, m_textLine, "Wheel 1: ", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Header
-		debugDraw.drawString(5, m_textLine, "Wheel Radius: " + CarTest.wheelSize1 + "f", Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Wheel Radius: " + CarTest.bestGenes[4] + "f", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Wheel size 1
-		debugDraw.drawString(5, m_textLine, "Wheel Speed: " + CarTest.m_speed1*-1 + "f", Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Wheel Speed: " + CarTest.bestGenes[5] + "f", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Speed 1
-		debugDraw.drawString(5, m_textLine, "Torque: " + CarTest.m_torque1 + "f", Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Torque: " + CarTest.bestGenes[6] + "f", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Torque 1
-		debugDraw.drawString(5, m_textLine, "Suspension Stiffness: " + CarTest.m_hz1 + "f", Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Suspension Stiffness: " + CarTest.bestGenes[7] + "f", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Suspension Dampening 1
 
 		debugDraw.drawString(5, m_textLine, "", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE;
 		debugDraw.drawString(5, m_textLine, "Wheel 2: ", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Header 2
-		debugDraw.drawString(5, m_textLine, "Wheel Radius: " + CarTest.wheelSize2 + "f", Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Wheel Radius: " + CarTest.bestGenes[8] + "f", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Wheel size 2
-		debugDraw.drawString(5, m_textLine, "Wheel Speed: " + CarTest.m_speed2*-1 + "f", Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Wheel Speed: " + CarTest.bestGenes[9] + "f", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Speed 2
-		debugDraw.drawString(5, m_textLine, "Torque: " + CarTest.m_torque2 + "f", Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Torque: " + CarTest.bestGenes[10] + "f", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Torque 2
-		debugDraw.drawString(5, m_textLine, "Suspension Stiffness: " + CarTest.m_hz2 + "f", Color3f.WHITE);
-		m_textLine += TEXT_LINE_SPACE; //Suspension Dampening 2
+		debugDraw.drawString(5, m_textLine, "Suspension Stiffness: " + CarTest.bestGenes[11] + "f", Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE; //Suspension Dampening 2	
 		
 		/*
 		 * debugDraw.drawString(5, m_textLine, "Best Time: " + (int) model.getBestFps(),
