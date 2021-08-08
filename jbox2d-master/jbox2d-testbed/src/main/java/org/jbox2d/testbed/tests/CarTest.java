@@ -15,6 +15,7 @@ import org.jbox2d.dynamics.joints.WheelJoint;
 import org.jbox2d.dynamics.joints.WheelJointDef;
 import org.jbox2d.testbed.framework.TestbedSettings;
 import org.jbox2d.testbed.framework.TestbedTest;
+
 import my_Code.Evolver;
 
 /**
@@ -41,24 +42,9 @@ public class CarTest extends TestbedTest {
 	public static String bestTimeVisualizer = "00:02:00.000";
 	
 //Record/Gene instantiations
-/*	public static Object[] bestGenes = new Object[12]; // Previous Best List
-	public static Object[] currentGenes = new Object[12]; // Record List
-	public static int run = 0; // Which iteration
-	public static double currentBest = 6e+10; // Fitness to compete against - 2mins starting
-	public static double recordedTime; // Fitness of genetics
-	public static int evolutions = 0; // Number of beneficial evolutions
-	public static float wheelSize1 = 0.4f;
-	public static float wheelSize2 = 0.4f;
-	// Max rotational speed of the wheel.
-	public static float m_speed1 = -40.0f; // Back wheel
-	public static float m_speed2 = -40.0f; // Front wheel
-	public static float m_torque1 = 40.0f; // Max torque available for the wheel/Rate of Acceleration.
-	public static float m_torque2 = 40.0f;
-	public static float m_hz1 = 2.5f; // Suspension dampening ratio. Underdamped <1> Overdamped
-	public static float m_hz2 = 2.5f;
-*/
-	public static Object[] currentGenes = {0, 6e+10, 0.0, 0, 0.4f, -40.0f, 40.0f, 2.5f, 0.4f, -40.0f, 40.0f, 2.5f};
-	public static Object[] bestGenes = {0, 6e+10, 0.0, 0, 0.4f, -40.0f, 40.0f, 2.5f, 0.4f, -40.0f, 40.0f, 2.5f};
+	public static Object[] currentGenes = {0, 6e+10, 0.0, 0, 0.4f, -30.0f, 30.0f, 2.5f, 0.4f, -30.0f, 30.0f, 2.5f};
+	public static Object[] bestGenes = {0, 6e+10, 0.0, 0, 0.4f, -20.0f, 30.0f, 2.5f, 0.4f, -40.0f, 40.0f, 2.5f};
+	public static int run = 0;
 	
 	@Override
 	public void initTest(boolean deserialized) {
@@ -219,20 +205,21 @@ public class CarTest extends TestbedTest {
 		// if contact has been made with the goal node or 1.5 times the currentBest time
 		// has passed...
 		if (hasFin == true || stopwatch.getNanoTime() > new Double(CarTest.currentGenes[1].toString()) * 1.5) {
-						
-			stopwatch.stop();
 			
-			if (stopwatch.getNanoTime() > new Double(CarTest.currentGenes[1].toString()) * 1.5) { //If did not complete course
-				currentGenes[2] = new Double(CarTest.currentGenes[1].toString()) * 1.5; //Replace recorded time
-			}
-			else if (hasFin == true && stopwatch.getNanoTime() < new Double(CarTest.currentGenes[1].toString())) { //If higher fitness
+			stopwatch.stop();
+			run++;
+			currentGenes[0] = run;
+			currentGenes[2] = stopwatch.getNanoTime(); //Replace recorded time
+			
+			//If higher fitness
+			if (hasFin == true && stopwatch.getNanoTime() < new Double(CarTest.currentGenes[1].toString())) {
 				currentGenes[1] = stopwatch.getNanoTime(); //Replace best time
 				bestTimeVisualizer = stopwatch.toString();
 				
 				int evolved = (int) currentGenes[3]; //iterate evolution
 				currentGenes[3] = evolved+1;
 				
-				for (int i= 0; i < currentGenes.length - 1; i++) { //make current genes best genes
+				for (int i= 0; i < currentGenes.length - 1; i++) { //Make current genes best genes
 					bestGenes[i] = currentGenes[i];
 				}
 			}
@@ -241,10 +228,7 @@ public class CarTest extends TestbedTest {
 			m_wheel1.getWorld().destroyBody(m_wheel1);
 			m_wheel2.getWorld().destroyBody(m_wheel2);
 			
-			int v = (int) bestGenes[0];
-			bestGenes[0] = v + 1;
-			//v+1 works but v++ doesn't????
-			currentGenes = Evolver.evolver(bestGenes);
+			currentGenes = Evolver.evolver(bestGenes); //Evolve best genes
 			
 			initTest(false);
 		}
