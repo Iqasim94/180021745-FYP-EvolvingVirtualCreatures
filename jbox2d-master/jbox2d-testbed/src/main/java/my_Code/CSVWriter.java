@@ -55,7 +55,6 @@ public class CSVWriter {
 			pw.close();
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -69,15 +68,13 @@ public class CSVWriter {
 			PrintWriter pw = new PrintWriter(bw);
 			
 			for (int i = 0; i > currentGenes.length-1; i++) {
-				pw.print(currentGenes[i] + ",");
+				pw.print(currentGenes[i].toString() + ",");
 				pw.flush();
 				pw.close();
 			}
-			
 			newLine(currentGenes[0].toString(), filepath);
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
 	}

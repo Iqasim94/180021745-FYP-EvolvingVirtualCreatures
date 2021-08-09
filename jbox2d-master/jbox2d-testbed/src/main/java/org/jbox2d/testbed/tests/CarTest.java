@@ -47,7 +47,7 @@ public class CarTest extends TestbedTest {
 //Record/Gene instantiations
 	public static Object[] currentGenes = {0, 6e+10, 0.0, 0, 0.4f, -30.0f, 30.0f, 2.5f, 0.4f, -30.0f, 30.0f, 2.5f};
 	public static Object[] bestGenes = {0, 6e+10, 0.0, 0, 0.4f, -20.0f, 30.0f, 2.5f, 0.4f, -40.0f, 40.0f, 2.5f};
-	public static Object[] backupSeed = new Object[12];
+	public static Object[] backupSeed = {0, 6e+10, 0.0, 0, 0.4f, -20.0f, 30.0f, 2.5f, 0.4f, -40.0f, 40.0f, 2.5f};
 	public static int run = 0; //Number of runs
 	public static int failedRun = 0;
 	
