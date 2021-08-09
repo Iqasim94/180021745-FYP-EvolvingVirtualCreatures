@@ -16,6 +16,7 @@ import org.jbox2d.dynamics.joints.WheelJointDef;
 import org.jbox2d.testbed.framework.TestbedSettings;
 import org.jbox2d.testbed.framework.TestbedTest;
 
+import my_Code.CSVWriter;
 import my_Code.Evolver;
 
 /**
@@ -41,16 +42,21 @@ public class CarTest extends TestbedTest {
 	public static StopWatch stopwatch;
 	public static String bestTimeVisualizer = "00:02:00.000";
 	
+	public static String fileName = "C:\\Users\\Ishmail Qasim\\OneDrive\\Documents\\Back up uni work\\Year 3\\FYP\\EVC_Log.csv";
+	
 //Record/Gene instantiations
 	public static Object[] currentGenes = {0, 6e+10, 0.0, 0, 0.4f, -30.0f, 30.0f, 2.5f, 0.4f, -30.0f, 30.0f, 2.5f};
 	public static Object[] bestGenes = {0, 6e+10, 0.0, 0, 0.4f, -20.0f, 30.0f, 2.5f, 0.4f, -40.0f, 40.0f, 2.5f};
-	public static int run = 0;
+	public static Object[] backupSeed = new Object[12];
+	public static int run = 0; //Number of runs
+	public static int failedRun = 0;
 	
 	@Override
 	public void initTest(boolean deserialized) {
 		if (deserialized) {
 			return;
 		}
+		CSVWriter.saveResult(currentGenes, fileName);
 		stopwatch = StopWatch.createStarted();
 		hasFin = false;
 		launch();
@@ -202,17 +208,19 @@ public class CarTest extends TestbedTest {
 		super.step(settings);
 		getCamera().setCamera(m_car.getPosition());
 		
-		// if contact has been made with the goal node or 1.5 times the currentBest time
+		// if contact has been made with the goal node or 2 times the currentBest time
 		// has passed...
-		if (hasFin == true || stopwatch.getNanoTime() > new Double(CarTest.currentGenes[1].toString()) * 1.5) {
+		if (hasFin == true || stopwatch.getNanoTime() > new Double(CarTest.currentGenes[1].toString()) * 2) {
 			
 			stopwatch.stop();
 			run++;
 			currentGenes[0] = run;
 			currentGenes[2] = stopwatch.getNanoTime(); //Replace recorded time
+			failedRun++;
 			
 			//If higher fitness
 			if (hasFin == true && stopwatch.getNanoTime() < new Double(CarTest.currentGenes[1].toString())) {
+				failedRun = 0;
 				currentGenes[1] = stopwatch.getNanoTime(); //Replace best time
 				bestTimeVisualizer = stopwatch.toString();
 				
@@ -222,13 +230,25 @@ public class CarTest extends TestbedTest {
 				for (int i= 0; i < currentGenes.length - 1; i++) { //Make current genes best genes
 					bestGenes[i] = currentGenes[i];
 				}
+			} else if (hasFin == true && stopwatch.getNanoTime() > new Double(CarTest.currentGenes[1].toString())) {
+				failedRun = 0;
+				currentGenes[1] = stopwatch.getNanoTime();
+				
+				for (int i= 0; i < currentGenes.length - 1; i++) { //Make current genes best genes
+					backupSeed[i] = currentGenes[i];
+				}
 			}
 
 			m_car.getWorld().destroyBody(m_car);
 			m_wheel1.getWorld().destroyBody(m_wheel1);
 			m_wheel2.getWorld().destroyBody(m_wheel2);
 			
-			currentGenes = Evolver.evolver(bestGenes); //Evolve best genes
+			if (failedRun > 9) { //If 10 runs are carried out with no evolution, evolve last completed gene set
+				currentGenes = Evolver.evolver(backupSeed); //Use seed
+				failedRun = 0;
+			} else {
+				currentGenes = Evolver.evolver(bestGenes); //Evolve best genes
+			}
 			
 			initTest(false);
 		}

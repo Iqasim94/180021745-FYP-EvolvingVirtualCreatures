@@ -9,10 +9,15 @@ import java.io.PrintWriter;
 
 public class CSVWriter {
 	
+	public static String fileName = "C:\\Users\\Ishmail Qasim\\OneDrive\\Documents\\Back up uni work\\Year 3\\FYP\\EVC_Log.csv";
+	
 	//Create new file
 	public static void main(String[] args) {
+		//writeNewFile();
+	}
 		
-		try (PrintWriter EVC_Log = new PrintWriter(new File("EVC_Log.csv"))) {
+	public static void writeNewFile() {
+		try (PrintWriter EVC_Log = new PrintWriter(new File(fileName))) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Run");sb.append(",");
 			sb.append("Previous Best");sb.append(",");
@@ -27,7 +32,7 @@ public class CSVWriter {
 			sb.append("Wheel2 Size");sb.append(",");
 			sb.append("Wheel2 speed");sb.append(",");
 			sb.append("Wheel2 maxTorque");sb.append(",");
-			sb.append("Wheel2 dampingRatio");sb.append("\n");
+			sb.append("Wheel2 dampingRatio");sb.append(",");
 			
 			EVC_Log.write(sb.toString());
 			
@@ -37,7 +42,7 @@ public class CSVWriter {
 	}
 	
 	//Add new line in CSV.
-	public static void newLine(int i, String filepath) {
+	public static void newLine(String i, String filepath) {
 		
 		try {
 			FileWriter EVC_Log = new FileWriter(filepath, true);
@@ -56,16 +61,20 @@ public class CSVWriter {
 	}
 	
 	//Append new configuration to row end.
-	public static void saveResult(double bestGen, String filepath) {
+	public static void saveResult(Object[] currentGenes, String filepath) {
 		
 		try {
-			FileWriter csvWriter = new FileWriter(filepath, true);
-			BufferedWriter bw = new BufferedWriter(csvWriter);
+			FileWriter EVC_Log = new FileWriter(filepath, true);
+			BufferedWriter bw = new BufferedWriter(EVC_Log);
 			PrintWriter pw = new PrintWriter(bw);
 			
-			pw.print(bestGen + ",");
-			pw.flush();
-			pw.close();
+			for (int i = 0; i > currentGenes.length-1; i++) {
+				pw.print(currentGenes[i] + ",");
+				pw.flush();
+				pw.close();
+			}
+			
+			newLine(currentGenes[0].toString(), filepath);
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

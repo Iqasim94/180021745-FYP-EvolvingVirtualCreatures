@@ -454,7 +454,9 @@ public abstract class TestbedTest implements ContactListener, ObjectListener, Ob
 		debugDraw.drawString(5, m_textLine, "Run: " + CarTest.run, Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Iteration
 		debugDraw.drawString(5, m_textLine, "Evolution: " + CarTest.bestGenes[3], Color3f.WHITE);
-		m_textLine += TEXT_LINE_SPACE; //Evolutions	
+		m_textLine += TEXT_LINE_SPACE; //Evolutions
+		debugDraw.drawString(5, m_textLine, "Num of non-evolutions: " + CarTest.failedRun, Color3f.WHITE);
+		m_textLine += TEXT_LINE_SPACE; //Non-evo patterns
 			
 		debugDraw.drawString(5, m_textLine, "", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE;
