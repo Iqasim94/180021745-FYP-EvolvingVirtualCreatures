@@ -65,6 +65,8 @@ import org.jbox2d.serialization.pb.PbDeserializer;
 import org.jbox2d.serialization.pb.PbSerializer;
 import org.jbox2d.testbed.tests.CarTest;
 
+import my_Code.CSVWriter;
+
 /**
  * @author Daniel Murphy
  */
@@ -187,6 +189,7 @@ public abstract class TestbedTest implements ContactListener, ObjectListener, Ob
 
 	public void init(TestbedModel model) {
 
+		CSVWriter.writeNewFile();
 		elapsedTimer = StopWatch.createStarted();
 		this.model = model;
 

@@ -18,6 +18,7 @@ import org.jbox2d.testbed.framework.TestbedTest;
 
 import my_Code.CSVWriter;
 import my_Code.Evolver;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Ishmail Qasim
@@ -40,14 +41,14 @@ public class CarTest extends TestbedTest {
 	public float m_zeta = 0.7f; // Damping Ratio: Resistive force reactionary friction.
 	
 	public static StopWatch stopwatch;
-	public static String bestTimeVisualizer = "00:02:00.000";
+	public static String bestTimeVisualizer = "00:01:00.000";
 	
 	public static String fileName = "C:\\Users\\Ishmail Qasim\\OneDrive\\Documents\\Back up uni work\\Year 3\\FYP\\EVC_Log.csv";
 	
 //Record/Gene instantiations
 	public static Object[] currentGenes = {0, 6e+10, 0.0, 0, 0.4f, -30.0f, 30.0f, 2.5f, 0.4f, -30.0f, 30.0f, 2.5f};
-	public static Object[] bestGenes = {0, 6e+10, 0.0, 0, 0.4f, -20.0f, 30.0f, 2.5f, 0.4f, -40.0f, 40.0f, 2.5f};
-	public static Object[] backupSeed = {0, 6e+10, 0.0, 0, 0.4f, -20.0f, 30.0f, 2.5f, 0.4f, -40.0f, 40.0f, 2.5f};
+	public static Object[] bestGenes =    {0, 6e+10, 0.0, 0, 0.4f, -30.0f, 30.0f, 2.5f, 0.4f, -30.0f, 30.0f, 2.5f};
+	public static Object[] backupSeed =   {0, 6e+10, 0.0, 0, 0.4f, -30.0f, 30.0f, 2.5f, 0.4f, -30.0f, 30.0f, 2.5f};
 	public static int run = 0; //Number of runs
 	public static int failedRun = 0;
 	
@@ -56,7 +57,38 @@ public class CarTest extends TestbedTest {
 		if (deserialized) {
 			return;
 		}
-		CSVWriter.saveResult(currentGenes, fileName);
+		
+		CSVWriter.newLine(fileName);
+		
+		for (int i = 0; i < currentGenes.length; i++) {
+			if (i == 1 || i == 2) { //Converts nanoseconds to readable time
+							
+				@SuppressWarnings("deprecation")
+				double timeConv = new Double(currentGenes[i].toString());
+				long hours = 0;
+				long minutes = 0;
+				long seconds = 0;
+				long millieseconds = TimeUnit.NANOSECONDS.toMillis((long) timeConv);
+				
+				while (millieseconds > 999) {
+					millieseconds = millieseconds - 1000;
+					seconds++;
+				}
+				while (seconds > 59) {
+					seconds = seconds - 60;
+					minutes++;
+				}
+				while (minutes > 59) {
+					minutes = minutes - 60;
+					hours++;
+				}				
+				String timeRec = hours + ":" + minutes + ":" + seconds + "." + millieseconds;
+				CSVWriter.saveResult(timeRec, fileName);
+				
+			} else {
+				CSVWriter.saveResult(currentGenes[i].toString(), fileName);
+			}
+		}
 		stopwatch = StopWatch.createStarted();
 		hasFin = false;
 		launch();
@@ -210,7 +242,7 @@ public class CarTest extends TestbedTest {
 		
 		// if contact has been made with the goal node or 2 times the currentBest time
 		// has passed...
-		if (hasFin == true || stopwatch.getNanoTime() > new Double(CarTest.currentGenes[1].toString()) * 2) {
+		if (hasFin == true || stopwatch.getNanoTime() > new Double(currentGenes[1].toString()) * 2) {
 			
 			stopwatch.stop();
 			run++;
@@ -219,7 +251,7 @@ public class CarTest extends TestbedTest {
 			failedRun++;
 			
 			//If higher fitness
-			if (hasFin == true && stopwatch.getNanoTime() < new Double(CarTest.currentGenes[1].toString())) {
+			if (hasFin == true && stopwatch.getNanoTime() < new Double(currentGenes[1].toString())) {
 				failedRun = 0;
 				currentGenes[1] = stopwatch.getNanoTime(); //Replace best time
 				bestTimeVisualizer = stopwatch.toString();
@@ -230,7 +262,7 @@ public class CarTest extends TestbedTest {
 				for (int i= 0; i < currentGenes.length - 1; i++) { //Make current genes best genes
 					bestGenes[i] = currentGenes[i];
 				}
-			} else if (hasFin == true && stopwatch.getNanoTime() > new Double(CarTest.currentGenes[1].toString())) {
+			} else if (hasFin == true && stopwatch.getNanoTime() > new Double(currentGenes[1].toString())) {
 				failedRun = 0;
 				currentGenes[1] = stopwatch.getNanoTime();
 				

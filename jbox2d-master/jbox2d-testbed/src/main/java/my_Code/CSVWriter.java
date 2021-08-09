@@ -7,13 +7,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import com.google.gson.Gson;
+
 public class CSVWriter {
 	
 	public static String fileName = "C:\\Users\\Ishmail Qasim\\OneDrive\\Documents\\Back up uni work\\Year 3\\FYP\\EVC_Log.csv";
 	
 	//Create new file
 	public static void main(String[] args) {
-		//writeNewFile();
+		writeNewFile();
 	}
 		
 	public static void writeNewFile() {
@@ -42,7 +44,7 @@ public class CSVWriter {
 	}
 	
 	//Add new line in CSV.
-	public static void newLine(String i, String filepath) {
+	public static void newLine(String filepath) {
 		
 		try {
 			FileWriter EVC_Log = new FileWriter(filepath, true);
@@ -51,31 +53,27 @@ public class CSVWriter {
 			
 			pw.flush();
 			pw.println();
-			pw.print(i + ",");
 			pw.close();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	//Append new configuration to row end.
-	public static void saveResult(Object[] currentGenes, String filepath) {
 		
-		try {
-			FileWriter EVC_Log = new FileWriter(filepath, true);
-			BufferedWriter bw = new BufferedWriter(EVC_Log);
-			PrintWriter pw = new PrintWriter(bw);
+	//Append new configuration to row end.
+		public static void saveResult(String currentGene, String filepath) {
 			
-			for (int i = 0; i > currentGenes.length-1; i++) {
-				pw.print(currentGenes[i].toString() + ",");
+			try {
+				FileWriter EVC_Log = new FileWriter(filepath, true);
+				BufferedWriter bw = new BufferedWriter(EVC_Log);
+				PrintWriter pw = new PrintWriter(bw);
+	
+				pw.print(currentGene + ",");
 				pw.flush();
 				pw.close();
-			}
-			newLine(currentGenes[0].toString(), filepath);
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
-	}
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}	
+		}
 }
