@@ -7,7 +7,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import com.google.gson.Gson;
+/**
+ * @author Ishmail Qasim
+ * 
+ * 	Used for recording the genes string through each iteration
+ */
 
 public class CSVWriter {
 	

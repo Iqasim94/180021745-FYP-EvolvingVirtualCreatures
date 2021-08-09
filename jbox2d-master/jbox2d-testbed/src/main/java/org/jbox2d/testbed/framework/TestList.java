@@ -28,7 +28,7 @@ import org.jbox2d.testbed.tests.BodyTypes;
 import org.jbox2d.testbed.tests.Breakable;
 import org.jbox2d.testbed.tests.BulletTest;
 import org.jbox2d.testbed.tests.Car;
-import org.jbox2d.testbed.tests.CarTest;
+import org.jbox2d.testbed.tests.CarDemo;
 import org.jbox2d.testbed.tests.CharacterCollision;
 import org.jbox2d.testbed.tests.ConvexHull;
 import org.jbox2d.testbed.tests.ConveyorBelt;
@@ -44,7 +44,7 @@ import org.jbox2d.testbed.tests.WaveMachine;
 public class TestList {
 
   public static void populateModel(TestbedModel model) {
-	model.addTest(new CarTest());
+	model.addTest(new CarDemo());
 	model.addTest(new WaveMachine());
     model.addTest(new Car());
     model.addTest(new TheoJansen());

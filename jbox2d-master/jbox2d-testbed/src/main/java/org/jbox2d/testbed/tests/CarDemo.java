@@ -23,12 +23,14 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Ishmail Qasim
  *
- *         Making a car init
+ *         The demo space for demonstrating, evaluating and developing an evolutionary mechanism for a vehicle design.
+ *         Namely for the design of the wheels and their joints.
+ *         This is in order to ascertain a progressively more functional vehicle with increased performance results.
  */
 
-public class CarTest extends TestbedTest {
+public class CarDemo extends TestbedTest {
 
-//Initialization
+//Initialization of objects
 	public Body m_car;
 	public Body m_wheel1;
 	public Body m_wheel2;
@@ -41,25 +43,31 @@ public class CarTest extends TestbedTest {
 	public float m_zeta = 0.7f; // Damping Ratio: Resistive force reactionary friction.
 	
 	public static StopWatch stopwatch;
-	public static String bestTimeVisualizer = "00:01:00.000";
+	public static String bestTimeVisualizer = "00:01:00.000"; //For display only
 	
 	public static String fileName = "C:\\Users\\Ishmail Qasim\\OneDrive\\Documents\\Back up uni work\\Year 3\\FYP\\EVC_Log.csv";
 	
-//Record/Gene instantiations
+/*
+ * Record/Gene instantiations:
+ * 	[0] - Run			 [4] - Wheel 1 Size					 [8] - Wheel 2 Size
+ * 	[1] - Best Time		 [5] - Wheel 1 Speed				 [9] - Wheel 2 Speed
+ * 	[2] - Recorded Time	 [6] - Wheel 1 Torque				 [10] - Wheel 2 Torque
+ * 	[3] - Evolutions	 [7] - Wheel 1 Suspension Dampening	 [11] - Wheel 2 Suspension Dampening
+ */
 	public static Object[] currentGenes = {0, 6e+10, 0.0, 0, 0.4f, -30.0f, 30.0f, 2.5f, 0.4f, -30.0f, 30.0f, 2.5f};
 	public static Object[] bestGenes =    {0, 6e+10, 0.0, 0, 0.4f, -30.0f, 30.0f, 2.5f, 0.4f, -30.0f, 30.0f, 2.5f};
 	public static Object[] backupSeed =   {0, 6e+10, 0.0, 0, 0.4f, -30.0f, 30.0f, 2.5f, 0.4f, -30.0f, 30.0f, 2.5f};
-	public static int run = 0; //Number of runs
-	public static int failedRun = 0;
+	public static int run = 0;
+	public static int failedRun = 0; //Num times same gene is used
 	
 	@Override
-	public void initTest(boolean deserialized) {
+	public void initTest(boolean deserialized) { //Run this class or not
 		if (deserialized) {
 			return;
 		}
 		
+		//Save to record
 		CSVWriter.newLine(fileName);
-		
 		for (int i = 0; i < currentGenes.length; i++) {
 			if (i == 1 || i == 2) { //Converts nanoseconds to readable time
 							
@@ -111,7 +119,7 @@ public class CarTest extends TestbedTest {
 		shape.set(new Vec2(-20.0f, 0.0f), new Vec2(200.0f, 0.0f));
 		ground.createFixture(fd);
 */	
-	// TestMap
+	// DemoMap
 		// Start line
 		shape.set(new Vec2(-5.0f, 0.0f), new Vec2(-5.0f, 10.0f));
 		ground.createFixture(fd);
@@ -240,8 +248,7 @@ public class CarTest extends TestbedTest {
 		super.step(settings);
 		getCamera().setCamera(m_car.getPosition());
 		
-		// if contact has been made with the goal node or 2 times the currentBest time
-		// has passed...
+		// if contact has been made with the goal node or 2 times the currentBest time has passed...
 		if (hasFin == true || stopwatch.getNanoTime() > new Double(currentGenes[1].toString()) * 2) {
 			
 			stopwatch.stop();
@@ -262,15 +269,18 @@ public class CarTest extends TestbedTest {
 				for (int i= 0; i < currentGenes.length - 1; i++) { //Make current genes best genes
 					bestGenes[i] = currentGenes[i];
 				}
-			} else if (hasFin == true && stopwatch.getNanoTime() > new Double(currentGenes[1].toString())) {
+			} 
+			//Completed course but not higher fitness
+			else if (hasFin == true && stopwatch.getNanoTime() > new Double(currentGenes[1].toString())) {
 				failedRun = 0;
 				currentGenes[1] = stopwatch.getNanoTime();
 				
-				for (int i= 0; i < currentGenes.length - 1; i++) { //Make current genes best genes
+				for (int i= 0; i < currentGenes.length - 1; i++) { //Make current genes new seed
 					backupSeed[i] = currentGenes[i];
 				}
 			}
 
+			//Wipe animation space
 			m_car.getWorld().destroyBody(m_car);
 			m_wheel1.getWorld().destroyBody(m_wheel1);
 			m_wheel2.getWorld().destroyBody(m_wheel2);
@@ -282,7 +292,7 @@ public class CarTest extends TestbedTest {
 				currentGenes = Evolver.evolver(bestGenes); //Evolve best genes
 			}
 			
-			initTest(false);
+			initTest(false); //Reset
 		}
 	}
 

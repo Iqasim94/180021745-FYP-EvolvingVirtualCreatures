@@ -26,7 +26,6 @@ package org.jbox2d.testbed.framework;
 import java.util.LinkedList;
 
 import org.apache.commons.lang3.time.StopWatch;
-
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.callbacks.DebugDraw;
@@ -39,7 +38,6 @@ import org.jbox2d.collision.Collision;
 import org.jbox2d.collision.Collision.PointState;
 import org.jbox2d.collision.Manifold;
 import org.jbox2d.collision.WorldManifold;
-import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.common.Color3f;
 import org.jbox2d.common.Settings;
@@ -63,7 +61,7 @@ import org.jbox2d.serialization.UnsupportedListener;
 import org.jbox2d.serialization.UnsupportedObjectException;
 import org.jbox2d.serialization.pb.PbDeserializer;
 import org.jbox2d.serialization.pb.PbSerializer;
-import org.jbox2d.testbed.tests.CarTest;
+import org.jbox2d.testbed.tests.CarDemo;
 
 import my_Code.CSVWriter;
 
@@ -191,6 +189,7 @@ public abstract class TestbedTest implements ContactListener, ObjectListener, Ob
 
 		CSVWriter.writeNewFile();
 		elapsedTimer = StopWatch.createStarted();
+				
 		this.model = model;
 
 		Vec2 gravity = new Vec2(0, -10f);
@@ -363,14 +362,14 @@ public abstract class TestbedTest implements ContactListener, ObjectListener, Ob
 	private final Color3f color3 = new Color3f(.9f, .9f, .9f);
 	private final Color3f color4 = new Color3f(.6f, .61f, 1);
 	private final Color3f color5 = new Color3f(.9f, .9f, .3f);
-	private final Color3f mouseColor = new Color3f(0f, 1f, 0f);
+//	private final Color3f mouseColor = new Color3f(0f, 1f, 0f);
 	private final Vec2 p1 = new Vec2();
 	private final Vec2 p2 = new Vec2();
 	private final Vec2 tangent = new Vec2();
-	private final Vec2 acceleration = new Vec2();
-	private final CircleShape pshape = new CircleShape();
-	private final ParticleVelocityQueryCallback pcallback = new ParticleVelocityQueryCallback();
-	private final AABB paabb = new AABB();
+//	private final Vec2 acceleration = new Vec2();
+//	private final CircleShape pshape = new CircleShape();
+//	private final ParticleVelocityQueryCallback pcallback = new ParticleVelocityQueryCallback();
+//	private final AABB paabb = new AABB();
 
 	@SuppressWarnings("deprecation")
 	public void step(TestbedSettings settings) {
@@ -429,62 +428,62 @@ public abstract class TestbedTest implements ContactListener, ObjectListener, Ob
 		
 		if (settings.pause && !elapsedTimer.isSuspended()) {
 			elapsedTimer.suspend();
-			CarTest.stopwatch.suspend();
+			CarDemo.stopwatch.suspend();
 		}
 		if (!settings.pause && elapsedTimer.isSuspended()) {
 			elapsedTimer.resume();
-			CarTest.stopwatch.resume();
+			CarDemo.stopwatch.resume();
 		}
 				
 		// Display timer on screen.
 		debugDraw.drawString(5, m_textLine, "Elapsed Time: " + elapsedTimer, Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE;
 		// Display timer on screen.
-		debugDraw.drawString(5, m_textLine, "Time to Beat: " + CarTest.bestTimeVisualizer, Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Time to Beat: " + CarDemo.bestTimeVisualizer, Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //BestTime
 				
-		if (CarTest.stopwatch.getNanoTime() < new Double(CarTest.currentGenes[1].toString())) {
-			debugDraw.drawString(5, m_textLine, "Current Time: " + CarTest.stopwatch.toString(), Color3f.WHITE);
+		if (CarDemo.stopwatch.getNanoTime() < new Double(CarDemo.currentGenes[1].toString())) {
+			debugDraw.drawString(5, m_textLine, "Current Time: " + CarDemo.stopwatch.toString(), Color3f.WHITE);
 			m_textLine += TEXT_LINE_SPACE;
 		} else {
-			debugDraw.drawString(5, m_textLine, "Current Time: " + CarTest.stopwatch.toString(), Color3f.RED);
+			debugDraw.drawString(5, m_textLine, "Current Time: " + CarDemo.stopwatch.toString(), Color3f.RED);
 			m_textLine += TEXT_LINE_SPACE;	
 		}
 
 	//Display Genes
 		debugDraw.drawString(5, m_textLine, "", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE;
-		debugDraw.drawString(5, m_textLine, "Run: " + CarTest.run, Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Run: " + CarDemo.run, Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Iteration
-		debugDraw.drawString(5, m_textLine, "Evolution: " + CarTest.bestGenes[3], Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Evolution: " + CarDemo.bestGenes[3], Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Evolutions
-		debugDraw.drawString(5, m_textLine, "Num of non-evolutions: " + CarTest.failedRun, Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Num of non-evolutions: " + CarDemo.failedRun, Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Non-evo patterns
 			
 		debugDraw.drawString(5, m_textLine, "", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE;
 		debugDraw.drawString(5, m_textLine, "Wheel 1: ", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Header
-		debugDraw.drawString(5, m_textLine, "Wheel Radius: " + CarTest.bestGenes[4] + "f", Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Wheel Radius: " + CarDemo.bestGenes[4] + "f", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Wheel size 1
-		debugDraw.drawString(5, m_textLine, "Wheel Speed: " + CarTest.bestGenes[5] + "f", Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Wheel Speed: " + CarDemo.bestGenes[5] + "f", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Speed 1
-		debugDraw.drawString(5, m_textLine, "Torque: " + CarTest.bestGenes[6] + "f", Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Torque: " + CarDemo.bestGenes[6] + "f", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Torque 1
-		debugDraw.drawString(5, m_textLine, "Suspension Stiffness: " + CarTest.bestGenes[7] + "f", Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Suspension Stiffness: " + CarDemo.bestGenes[7] + "f", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Suspension Dampening 1
 
 		debugDraw.drawString(5, m_textLine, "", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE;
 		debugDraw.drawString(5, m_textLine, "Wheel 2: ", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Header 2
-		debugDraw.drawString(5, m_textLine, "Wheel Radius: " + CarTest.bestGenes[8] + "f", Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Wheel Radius: " + CarDemo.bestGenes[8] + "f", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Wheel size 2
-		debugDraw.drawString(5, m_textLine, "Wheel Speed: " + CarTest.bestGenes[9] + "f", Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Wheel Speed: " + CarDemo.bestGenes[9] + "f", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Speed 2
-		debugDraw.drawString(5, m_textLine, "Torque: " + CarTest.bestGenes[10] + "f", Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Torque: " + CarDemo.bestGenes[10] + "f", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Torque 2
-		debugDraw.drawString(5, m_textLine, "Suspension Stiffness: " + CarTest.bestGenes[11] + "f", Color3f.WHITE);
+		debugDraw.drawString(5, m_textLine, "Suspension Stiffness: " + CarDemo.bestGenes[11] + "f", Color3f.WHITE);
 		m_textLine += TEXT_LINE_SPACE; //Suspension Dampening 2	
 		
 		/*

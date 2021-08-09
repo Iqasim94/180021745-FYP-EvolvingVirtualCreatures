@@ -2,6 +2,16 @@ package my_Code;
 
 import java.util.Random;
 
+/**
+ * @author Ishmail Qasim
+ * 
+ * 	Evolver class is responsible for taking a supplied Object type array with genetic string and
+ * 	changing parameters to determine whether a new configuration performs with a higher fitness.
+ * 
+ * 	Simplified evolutionary algorithm by taking components in the object and randomly generating a
+ * 	new value within a defined boundary. There is no number bias.
+ */
+
 public class Evolver {
 
 //	public static Object[] currentBestGenes;
@@ -14,7 +24,7 @@ public class Evolver {
 	
 	public static Object[] evolver(Object[] currentBestGenes) {
 		
-		int i = 3; //Num of genes to change
+		int i = 2; //Num of genes to change
 				
 		Random rand = new Random();
 		float newGene;

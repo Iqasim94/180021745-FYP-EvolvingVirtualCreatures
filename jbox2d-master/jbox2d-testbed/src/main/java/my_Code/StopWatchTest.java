@@ -1,12 +1,11 @@
 package my_Code;
 
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
+//import org.apache.commons.lang3.time.StopWatch;
+//import java.util.Random;
+import org.jbox2d.testbed.tests.CarDemo;
 
-import org.apache.commons.lang3.time.StopWatch;
-import org.jbox2d.testbed.tests.CarTest;
-
-public class StopWatchTest extends CarTest{
+public class StopWatchTest extends CarDemo{
 	
 	public static void main(String[] args) {
 
