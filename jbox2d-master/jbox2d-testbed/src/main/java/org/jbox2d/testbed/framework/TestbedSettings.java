@@ -59,6 +59,7 @@ public class TestbedSettings {
   public static final String DrawTree = "Dynamic Tree";
   public static final String DrawWireframe = "Wireframe Mode";
 
+  //START STATE
   public boolean pause = false;
   public boolean singleStep = false;
 
